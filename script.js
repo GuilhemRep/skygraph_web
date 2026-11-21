@@ -17,6 +17,28 @@ async function loadGraphFile(fileName) {
   return await d3.json(fileName);
 }
 
+// The source data can contain several nodes with the same id, and friend
+// lists with repeated names or the jumper themself. Links only refer to
+// names, so same-name nodes can't be told apart: merge them (sum jumps,
+// union of friends) and clean every friend list.
+function normalizeGraph(g) {
+  const merged = new Map();
+  g.nodes.forEach(n => {
+    const prev = merged.get(n.id);
+    if (prev) {
+      prev.number_jumps = (prev.number_jumps || 0) + (n.number_jumps || 0);
+      prev.friends = [...(prev.friends || []), ...(n.friends || [])];
+    } else {
+      merged.set(n.id, { ...n, friends: [...(n.friends || [])] });
+    }
+  });
+  merged.forEach(n => {
+    n.friends = [...new Set(n.friends)].filter(f => f !== n.id);
+    n.number_friends = n.friends.length;
+  });
+  return { ...g, nodes: [...merged.values()] };
+}
+
 function indexGraph(g) {
   nodesById = new Map(g.nodes.map(n => [n.id, n]));
 }
@@ -87,8 +109,9 @@ function drawAltimeter(totalJumps, g) {
   // progress arc
   const arc = d3.arc()
     .innerRadius(rInner).outerRadius(rOuter)
-    .startAngle(-Math.PI / 2)
-    .endAngle(-Math.PI / 2 + sweep * 2 * Math.PI)
+    // d3.arc angles start at 12 o'clock, clockwise
+    .startAngle(0)
+    .endAngle(sweep * 2 * Math.PI)
     .cornerRadius(4);
 
   svg.append("path")
@@ -140,7 +163,8 @@ function setupSearch() {
 
   searchInput.addEventListener("keypress", e => {
     if (e.key === "Enter") {
-      const norm = normalize(searchInput.value);
+      const norm = normalize(searchInput.value.trim());
+      if (!norm) return;
       const match = fullGraph.nodes.find(n => normalize(n.id) === norm)
         || fullGraph.nodes.find(n => normalize(n.id).includes(norm));
       if (match) showProfile(match.id);
@@ -260,19 +284,14 @@ function renderFriendsList(node) {
   }
   noFriends.classList.add("hidden");
 
-  var maxfriends = 0;
-
-  friends.forEach(fid => {
-    if (maxfriends<=10) {
-      const li = document.createElement("li");
-      const a = document.createElement("a");
-      a.className = "friend-link";
-      a.textContent = fid;
-      a.onclick = () => { if (nodesById.has(fid)) showProfile(fid); };
-      li.appendChild(a);
-      list.appendChild(li);
-      maxfriends += 1;
-    }
+  friends.slice(0, 10).forEach(fid => {
+    const li = document.createElement("li");
+    const a = document.createElement("a");
+    a.className = "friend-link";
+    a.textContent = fid;
+    a.onclick = () => { if (nodesById.has(fid)) showProfile(fid); };
+    li.appendChild(a);
+    list.appendChild(li);
   });
 }
 
@@ -392,7 +411,7 @@ function renderTimeline(node) {
 //   document.getElementById("fileDropdown").addEventListener("change", async e => {
 //     const fileName = path + files[e.target.value] + ".json";
 //     try {
-//       const data = await loadGraphFile(fileName);
+//       const data = normalizeGraph(await loadGraphFile(fileName));
 //       fullGraph = data;
 //       indexGraph(data);
 //       renderClubOverview(data);
@@ -408,7 +427,7 @@ document.getElementById("back-btn").addEventListener("click", backToLanding);
   setupSearch();
   // setupDropdown();
   try {
-    const data = await loadGraphFile(path + "jumpers.json");
+    const data = normalizeGraph(await loadGraphFile(path + "jumpers.json"));
     fullGraph = data;
     indexGraph(data);
     renderClubOverview(data);
