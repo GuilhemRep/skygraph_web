@@ -11,6 +11,7 @@ const COLORS = {
 
 let fullGraph = { nodes: [], links: [] };
 let nodesById = new Map();
+let currentProfileId = null;
 
 // ---------- Data loading ----------
 async function loadGraphFile(fileName) {
@@ -180,8 +181,10 @@ function setupSearch() {
 function showProfile(id) {
   const node = nodesById.get(id);
   if (!node) return;
+  currentProfileId = id;
 
   document.getElementById("landing").classList.add("hidden");
+  document.getElementById("carnet").classList.add("hidden");
   document.getElementById("profile").classList.remove("hidden");
   document.getElementById("suggestions").innerHTML = "";
   document.getElementById("nodeSearch").value = "";

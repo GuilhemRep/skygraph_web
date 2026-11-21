@@ -82,6 +82,7 @@
       <button id="back-btn" class="back-btn" aria-label="Retour">← Tableau de bord</button>
       <h1 id="profile-name">—</h1>
       <p id="profile-sub" class="profile-sub">—</p>
+      <button id="carnet-btn" class="carnet-btn" type="button">🖨 Mon carnet de saison</button>
     </header>
 
     <div class="profile-grid">
@@ -107,7 +108,58 @@
     </div>
   </section>
 
+  <!-- ============ SEASON LOGBOOK: EDIT + PRINT ============ -->
+  <section id="carnet" class="screen hidden">
+    <header class="carnet-toolbar">
+      <button id="carnet-back" class="back-btn" type="button">← Profil</button>
+      <h1 class="carnet-title">Carnet de saison</h1>
+      <div class="carnet-actions">
+        <button id="carnet-reset" class="ghost-btn" type="button">Réinitialiser</button>
+        <button id="carnet-print" class="primary-btn" type="button">🖨 Imprimer</button>
+      </div>
+    </header>
+
+    <div class="carnet-grid">
+      <form id="carnet-form" class="carnet-editor panel" autocomplete="off">
+        <p id="carnet-status" class="panel-hint"></p>
+
+        <fieldset>
+          <legend>Identité</legend>
+          <label class="field field-name"><span>Nom affiché</span><input id="f-name" type="text" maxlength="40"></label>
+        </fieldset>
+
+        <fieldset>
+          <legend>Sauts <span id="f-season"></span></legend>
+          <label class="field field-big"><span>Total</span><input id="f-total" type="number" min="0" step="1" inputmode="numeric"></label>
+          <div id="f-types" class="type-grid"></div>
+          <p id="f-others" class="field-note"></p>
+        </fieldset>
+
+        <fieldset>
+          <legend>Compagnons <span id="f-comp-count" class="legend-count"></span></legend>
+          <div class="comp-tools">
+            <input id="f-comp-filter" type="search" placeholder="Filtrer…" aria-label="Filtrer les compagnons">
+            <button id="f-comp-add" class="ghost-btn" type="button">+ Ajouter</button>
+          </div>
+          <div class="comp-head"><span>Nom</span><span>Sauts ensemble</span><span></span></div>
+          <div id="f-comps" class="comp-list"></div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Mot du sautant <small>(optionnel)</small></legend>
+          <textarea id="f-note" maxlength="300" rows="3" placeholder="ex : + 12 sauts à Empuriabrava en août"></textarea>
+        </fieldset>
+      </form>
+
+      <div id="sheet-wrap" class="sheet-wrap">
+        <article id="sheet" class="sheet"></article>
+      </div>
+    </div>
+    <datalist id="carnet-names"></datalist>
+  </section>
+
   <script src="script.js"></script>
+  <script src="carnet.js"></script>
 </body>
 
 </html>
