@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Piou Piou</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script src="d3.v7.min.js"></script>
+</head>
+
+<body>
+
+  <!-- ============ LANDING / CLUB OVERVIEW ============ -->
+  <section id="landing" class="screen">
+    <div class="sky-bg" aria-hidden="true">
+      <div class="cloud cloud-a"></div>
+      <div class="cloud cloud-b"></div>
+      <div class="cloud cloud-c"></div>
+    </div>
+
+    <header class="landing-header">
+      <div class="brand">
+        <span class="brand-mark">✈</span>
+        <span class="brand-name">Piou&nbsp;Piou</span>
+      </div>
+      <p class="brand-tagline">G sauté avec ki ? &#8482;</p>
+    </header>
+
+    <div class="dial-wrap">
+      <svg id="altimeter" viewBox="0 0 480 480" aria-hidden="true"></svg>
+      <div class="dial-center">
+        <div class="dial-figure" id="stat-total-jumps">—</div>
+        <div class="dial-label">sauts cette saison</div>
+      </div>
+    </div>
+
+    <div class="stat-row">
+      <div class="stat-card">
+        <div class="stat-figure" id="stat-members">—</div>
+        <div class="stat-label">sautants</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-figure" id="stat-links">—</div>
+        <div class="stat-label">duos formés</div>
+      </div>
+      <div class="stat-card stat-card-wide">
+        <div class="stat-label stat-label-top">Top sautants</div>
+        <ol id="top-jumpers" class="top-list"></ol>
+      </div>
+    </div>
+
+    <div class="search-zone">
+      <label for="nodeSearch" class="search-label">Recherche par nom</label>
+      <div class="search-box">
+        <input type="text" id="nodeSearch" placeholder="ex : Fafa, Gwen, Theo V…" autocomplete="off">
+        <div id="suggestions"></div>
+      </div>
+    </div>
+
+    <!-- <div class="centre filter-row">
+      <div class="custom-select">
+        <select id="fileDropdown" default="0">
+          <option disabled value="0"> Filtrer par type de saut </option>
+          <option selected value="0">Toute la famille</option>
+          <option value="1">PAC[wo]men</option>
+          <option value="2">Tandems</option>
+          <option value="3">Initiation B1-5</option>
+          <option value="5">Entre copaings</option>
+          <option value="6">Boogie</option>
+        </select>
+      </div>
+    </div> -->
+  </section>
+
+  <!-- ============ PERSONAL LOGBOOK ============ -->
+  <section id="profile" class="screen hidden">
+    <header class="profile-header">
+      <button id="back-btn" class="back-btn" aria-label="Retour">← Tableau de bord</button>
+      <h1 id="profile-name">—</h1>
+      <p id="profile-sub" class="profile-sub">—</p>
+    </header>
+
+    <div class="profile-grid">
+
+      <div class="panel panel-graph">
+        <h2 class="panel-title">Réseau de saut</h2>
+        <svg id="friend-graph" viewBox="0 0 600 600"></svg>
+        <p class="panel-hint">Touche un nom pour recentrer le réseau.</p>
+      </div>
+
+      <div class="panel panel-timeline">
+        <h2 class="panel-title">Saison</h2>
+        <p class="panel-hint">Un palier = un saut</p>
+        <svg id="timeline" viewBox="0 0 600 320"></svg>
+      </div>
+
+      <div class="panel panel-friends">
+        <h2 class="panel-title">Compagnons de saut</h2>
+        <ul id="friends-list" class="friends-list"></ul>
+        <p id="no-friends" class="panel-hint hidden">Encore aucun binôme enregistré — ton premier saut accompagné arrive bientôt !</p>
+      </div>
+
+    </div>
+  </section>
+
+  <script src="script.js"></script>
+</body>
+
+</html>
